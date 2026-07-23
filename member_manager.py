@@ -91,8 +91,8 @@ def add_member_window(excel_file):
 
         name = entry_name.get().strip()
         mobile = entry_mobile.get().strip()
-        birthday = entry_birthday.get().strip()
-        anniversary = entry_anniversary.get().strip()
+        birthday = birthday_entry.get().strip()
+        anniversary = anniversary_entry.get().strip()
 
         if name == "":
             messagebox.showerror(
@@ -179,3 +179,101 @@ def add_member_window(excel_file):
         width=200,
         command=save_member
     ).pack(pady=25)
+
+
+    if excel_file == "":
+        messagebox.showwarning(
+            "Warning",
+            "Please Select Excel File First"
+        )
+        return
+
+    win = Toplevel()
+
+    win.title("Search Member")
+
+    win.geometry("500x500")
+
+    ctk.CTkLabel(
+        win,
+        text="Search Member",
+        font=("Arial",22,"bold")
+    ).pack(pady=15)
+
+    search_entry = ctk.CTkEntry(
+        win,
+        width=300,
+        placeholder_text="Enter Name"
+    )
+
+    search_entry.pack(pady=10)
+
+    result = ctk.CTkTextbox(
+        
+        win,
+        width=420,
+        height=250
+    )
+
+    result.pack(pady=15)
+
+    def search():
+
+        result.delete("1.0","end")
+
+        keyword = search_entry.get().strip().lower()
+
+        if keyword == "":
+            return
+
+        df = pd.read_excel(excel_file)
+
+        df.columns = df.columns.str.strip()
+
+        found = False
+
+        for _, row in df.iterrows():
+
+            name = str(row["NAME"])
+
+            if keyword in name.lower():
+
+                found = True
+
+                result.insert(
+                    "end",
+                    f"Name : {row['NAME']}\n"
+                )
+
+                result.insert(
+                    "end",
+                    f"Mobile : {row['MOBILE NUMBER']}\n"
+                )
+
+                result.insert(
+                    "end",
+                    f"Birthday : {row['BIRTHDAY DATE']}\n"
+                )
+
+                result.insert(
+                    "end",
+                    f"Anniversary : {row['ANNIVERSARY DATE']}\n"
+                )
+
+                result.insert(
+                    "end",
+                    "-"*40 + "\n"
+                )
+
+        if not found:
+
+            result.insert(
+                "end",
+                "Member Not Found"
+            )
+
+    ctk.CTkButton(
+        win,
+        text="Search",
+        command=search
+    ).pack()

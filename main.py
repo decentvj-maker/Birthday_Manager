@@ -1,5 +1,7 @@
+from daily_wishes_v2 import open_daily_wishes
 import webbrowser
 from member_manager import add_member_window
+from member_search import search_member_window
 from whatsapp_sender import send_all_whatsapp
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
@@ -19,6 +21,16 @@ excel_file = ""
 
 # ---------------- Select File ----------------
 
+def search_member():
+
+    if excel_file == "":
+        messagebox.showwarning(
+            "Warning",
+            "Please Select Excel File"
+        )
+        return
+
+    search_member_window(excel_file)
 def select_file():
     global excel_file
 
@@ -32,6 +44,16 @@ def select_file():
         lbl_file.configure(text=os.path.basename(file))
     else:
         lbl_file.configure(text="No File Selected")
+def daily_wishes():
+
+    if excel_file == "":
+        messagebox.showwarning(
+            "Warning",
+            "Please Select Excel File"
+        )
+        return
+
+    open_daily_wishes(excel_file)       
 
 
 # ---------------- Generate Report ----------------
@@ -80,6 +102,14 @@ lbl_file = ctk.CTkLabel(
     font=("Arial", 15)
 )
 
+btn_daily = ctk.CTkButton(
+    app,
+    text="Daily Wishes Center",
+    width=250,
+    height=40,
+    command=daily_wishes
+)
+btn_daily.pack(pady=10)
 def print_report():
 
     if excel_file == "":
@@ -164,6 +194,15 @@ btn_whatsapp = ctk.CTkButton(
     command=whatsapp_report
 )
 btn_whatsapp.pack(pady=10)
+btn_search = ctk.CTkButton(
+    app,
+    text="Search Member",
+    width=250,
+    height=40,
+    command=search_member
+)
+
+btn_search.pack(pady=10)
 
 
 app.mainloop()
